@@ -29,7 +29,7 @@ class TranslationRepositoryImpl(
         }
 
     private val cacheMutex = Mutex()
-    private val cache = LinkedHashMap<String, CachedTranslation>(MAX_CACHE_SIZE, 0.75f, true)
+    private val cache = LinkedHashMap<CacheKey, CachedTranslation>(MAX_CACHE_SIZE, 0.75f, true)
     private val maxChunkSize = 4500
 
     @OptIn(ExperimentalTime::class)
@@ -38,7 +38,7 @@ class TranslationRepositoryImpl(
         targetLanguage: String,
         sourceLanguage: String,
     ): TranslationResult {
-        val cacheKey = buildCacheKey(text, targetLanguage)
+        val cacheKey = CacheKey(text, targetLanguage, sourceLanguage)
 
         cacheMutex.withLock {
             cache[cacheKey]?.let { cached ->
@@ -80,10 +80,6 @@ class TranslationRepositoryImpl(
     }
 
     override fun getDeviceLanguageCode(): String = localizationManager.getPrimaryLanguageCode()
-
-    override fun clearCache() {
-        cache.clear()
-    }
 
     private suspend fun translateSingleChunk(
         text: String,
@@ -193,16 +189,6 @@ class TranslationRepositoryImpl(
     companion object {
         private const val MAX_CACHE_SIZE = 50
         private const val CACHE_TTL_MS = 30 * 60 * 1000L // 30 minutes
-
-        /**
-         * Build a stable cache key using the first/last 100 chars + length + target language.
-         * This avoids hashCode collisions while keeping the key compact.
-         */
-        private fun buildCacheKey(text: String, targetLanguage: String): String {
-            val prefix = text.take(100)
-            val suffix = text.takeLast(100)
-            return "$prefix|$suffix|${text.length}:$targetLanguage"
-        }
     }
 
     @OptIn(ExperimentalTime::class)
@@ -210,7 +196,12 @@ class TranslationRepositoryImpl(
         val result: TranslationResult,
         private val timestamp: Long = Clock.System.now().toEpochMilliseconds(),
     ) {
-        fun isExpired(): Boolean =
-            Clock.System.now().toEpochMilliseconds() - timestamp > CACHE_TTL_MS
+        fun isExpired(): Boolean = Clock.System.now().toEpochMilliseconds() - timestamp > CACHE_TTL_MS
     }
+
+    private data class CacheKey(
+        val text: String,
+        val targetLanguage: String,
+        val sourceLanguage: String,
+    )
 }

@@ -10,6 +10,4 @@ interface TranslationRepository {
     ): TranslationResult
 
     fun getDeviceLanguageCode(): String
-
-    fun clearCache()
 }

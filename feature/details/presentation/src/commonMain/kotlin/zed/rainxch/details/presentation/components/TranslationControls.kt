@@ -168,8 +168,7 @@ private fun TranslatedControls(
                         } else {
                             MaterialTheme.colorScheme.surfaceContainerHigh
                         },
-                    )
-                    .clickable(onClick = onToggle)
+                    ).clickable(onClick = onToggle)
                     .padding(start = 10.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -192,9 +191,9 @@ private fun TranslatedControls(
             Text(
                 text =
                     if (isShowingTranslation) {
-                        displayName ?: stringResource(Res.string.translate)
-                    } else {
                         stringResource(Res.string.show_original)
+                    } else {
+                        displayName ?: stringResource(Res.string.translate)
                     },
                 style = MaterialTheme.typography.labelMedium,
                 fontWeight = FontWeight.Medium,
@@ -208,11 +207,12 @@ private fun TranslatedControls(
 
             LanguageDropdownButton(
                 onClick = onLanguagePickerClick,
-                tint = if (isShowingTranslation) {
-                    MaterialTheme.colorScheme.onPrimaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
+                tint =
+                    if (isShowingTranslation) {
+                        MaterialTheme.colorScheme.onPrimaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
             )
         }
     }
@@ -278,10 +278,11 @@ private enum class TranslationControlState {
 }
 
 private val TranslationState.controlState: TranslationControlState
-    get() = when {
-        isTranslating -> TranslationControlState.TRANSLATING
-        error != null && translatedText == null -> TranslationControlState.ERROR
-        isShowingTranslation && translatedText != null -> TranslationControlState.SHOWING_TRANSLATION
-        !isShowingTranslation && translatedText != null -> TranslationControlState.SHOWING_ORIGINAL
-        else -> TranslationControlState.IDLE
-    }
+    get() =
+        when {
+            isTranslating -> TranslationControlState.TRANSLATING
+            error != null && translatedText == null -> TranslationControlState.ERROR
+            isShowingTranslation && translatedText != null -> TranslationControlState.SHOWING_TRANSLATION
+            !isShowingTranslation && translatedText != null -> TranslationControlState.SHOWING_ORIGINAL
+            else -> TranslationControlState.IDLE
+        }
