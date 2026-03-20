@@ -12,7 +12,7 @@ val homeModule =
             HomeRepositoryImpl(
                 cachedDataSource = get(),
                 httpClient = get(),
-                platform = get(),
+                devicePlatform = get(),
                 logger = get(),
                 cacheManager = get(),
             )

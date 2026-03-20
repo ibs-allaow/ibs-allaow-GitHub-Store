@@ -6,13 +6,10 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
@@ -24,9 +21,8 @@ import zed.rainxch.home.data.dto.CachedGithubRepoSummary
 import zed.rainxch.home.data.dto.CachedRepoResponse
 import zed.rainxch.home.domain.model.HomeCategory
 import zed.rainxch.home.domain.model.HomePlatform
-import kotlin.let
 import kotlin.time.Clock
-import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -121,7 +117,8 @@ class CachedRepositoriesDataSourceImpl(
                         paths
                             .map { path ->
                                 async {
-                                    val url = "https://raw.githubusercontent.com/OpenHub-Store/api/main/$path"
+                                    val url =
+                                        "https://raw.githubusercontent.com/OpenHub-Store/api/main/$path"
                                     try {
                                         logger.debug("Fetching from: $url")
                                         val response: HttpResponse = httpClient.get(url)
@@ -151,9 +148,30 @@ class CachedRepositoriesDataSourceImpl(
                 val mergedRepos =
                     responses
                         .asSequence()
-                        .flatMap { it.repositories }
-                        .distinctBy { it.id }
-                        .sortedWith(
+                        .flatMap { it.repositories.asSequence() }
+                        .groupBy { it.id }
+                        .values
+                        .map { duplicates ->
+                            duplicates.reduce { acc, repo ->
+                                acc.copy(
+                                    trendingScore =
+                                        listOfNotNull(
+                                            acc.trendingScore,
+                                            repo.trendingScore,
+                                        ).maxOrNull(),
+                                    popularityScore =
+                                        listOfNotNull(
+                                            acc.popularityScore,
+                                            repo.popularityScore,
+                                        ).maxOrNull(),
+                                    latestReleaseDate =
+                                        listOfNotNull(
+                                            acc.latestReleaseDate,
+                                            repo.latestReleaseDate,
+                                        ).maxOrNull(),
+                                )
+                            }
+                        }.sortedWith(
                             compareByDescending<CachedGithubRepoSummary> { it.trendingScore }
                                 .thenByDescending { it.popularityScore }
                                 .thenByDescending { it.latestReleaseDate },
@@ -169,7 +187,8 @@ class CachedRepositoriesDataSourceImpl(
                     )
 
                 cacheMutex.withLock {
-                    memoryCache[cacheKey] = CacheEntry(data = merged, fetchedAt = Clock.System.now())
+                    memoryCache[cacheKey] =
+                        CacheEntry(data = merged, fetchedAt = Clock.System.now())
                 }
 
                 merged
@@ -197,10 +216,12 @@ class CachedRepositoriesDataSourceImpl(
                     val response: HttpResponse = httpClient.get(url)
 
                     if (response.status.isSuccess()) {
-                        val parsed = json.decodeFromString<CachedRepoResponse>(response.bodyAsText())
+                        val parsed =
+                            json.decodeFromString<CachedRepoResponse>(response.bodyAsText())
 
                         cacheMutex.withLock {
-                            memoryCache[cacheKey] = CacheEntry(data = parsed, fetchedAt = Clock.System.now())
+                            memoryCache[cacheKey] =
+                                CacheEntry(data = parsed, fetchedAt = Clock.System.now())
                         }
 
                         return@withContext parsed
@@ -220,7 +241,7 @@ class CachedRepositoriesDataSourceImpl(
     }
 
     private companion object {
-        private val CACHE_TTL = 5.minutes
+        private val CACHE_TTL = 1.hours
     }
 
     private data class CacheKey(
