@@ -445,61 +445,75 @@ private fun TopAppBar(
 
             if (isPlatformPopupVisible) {
                 Box {
-                    Popup(
-                        onDismissRequest = onTogglePlatformPopup,
-                    ) {
-                        Column(
-                            modifier =
-                                Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                                    .padding(6.dp),
-                        ) {
-                            HomePlatform.entries.forEach { platform ->
-                                Box(
-                                    modifier =
-                                        Modifier
-                                            .clickable(onClick = {
-                                                onChangePlatform(platform)
-                                            })
-                                            .padding(horizontal = 32.dp, vertical = 8.dp),
-                                ) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement =
-                                            Arrangement.spacedBy(
-                                                6.dp,
-                                                Alignment.Start,
-                                            ),
-                                    ) {
-                                        if (currentPlatform == platform) {
-                                            Icon(
-                                                imageVector = Icons.Default.Done,
-                                                contentDescription = null,
-                                                tint = MaterialTheme.colorScheme.primary,
-                                                modifier = Modifier.size(24.dp),
-                                            )
-                                        }
-
-                                        Text(
-                                            text =
-                                                platform.name
-                                                    .lowercase()
-                                                    .replaceFirstChar { it.uppercase() },
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Medium,
-                                            color = MaterialTheme.colorScheme.onBackground,
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    PlatformsPopup(
+                        onTogglePlatformPopup = onTogglePlatformPopup,
+                        onChangePlatform = onChangePlatform,
+                        currentPlatform = currentPlatform,
+                    )
                 }
             }
         },
         modifier = Modifier.padding(12.dp),
     )
+}
+
+@Composable
+private fun PlatformsPopup(
+    onTogglePlatformPopup: () -> Unit,
+    onChangePlatform: (HomePlatform) -> Unit,
+    currentPlatform: HomePlatform,
+) {
+    Popup(
+        onDismissRequest = onTogglePlatformPopup,
+    ) {
+        Column(
+            modifier =
+                Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                    .padding(6.dp),
+        ) {
+            HomePlatform.entries.forEach { platform ->
+                Box(
+                    modifier =
+                        Modifier
+                            .clickable(onClick = {
+                                onChangePlatform(platform)
+                                onTogglePlatformPopup()
+                            })
+                            .padding(horizontal = 32.dp, vertical = 8.dp),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement =
+                            Arrangement.spacedBy(
+                                6.dp,
+                                Alignment.Start,
+                            ),
+                    ) {
+                        if (currentPlatform == platform) {
+                            Icon(
+                                imageVector = Icons.Default.Done,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(24.dp),
+                            )
+                        }
+
+                        Text(
+                            text =
+                                platform.name
+                                    .lowercase()
+                                    .replaceFirstChar { it.uppercase() },
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Medium,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 @Preview

@@ -21,6 +21,7 @@ import zed.rainxch.home.data.dto.CachedGithubRepoSummary
 import zed.rainxch.home.data.dto.CachedRepoResponse
 import zed.rainxch.home.domain.model.HomeCategory
 import zed.rainxch.home.domain.model.HomePlatform
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.ExperimentalTime
@@ -131,6 +132,8 @@ class CachedRepositoriesDataSourceImpl(
                                     } catch (e: SerializationException) {
                                         logger.error("Parse error from $url: ${e.message}")
                                         null
+                                    } catch (e: CancellationException) {
+                                        throw e
                                     } catch (e: Exception) {
                                         logger.error("Error with $url: ${e.message}")
                                         null
@@ -186,9 +189,11 @@ class CachedRepositoriesDataSourceImpl(
                         repositories = mergedRepos,
                     )
 
-                cacheMutex.withLock {
-                    memoryCache[cacheKey] =
-                        CacheEntry(data = merged, fetchedAt = Clock.System.now())
+                if (responses.size == paths.size) {
+                    cacheMutex.withLock {
+                        memoryCache[cacheKey] =
+                            CacheEntry(data = merged, fetchedAt = Clock.System.now())
+                    }
                 }
 
                 merged
@@ -230,6 +235,8 @@ class CachedRepositoriesDataSourceImpl(
                     }
                 } catch (e: SerializationException) {
                     logger.error("Parse error from $url: ${e.message}")
+                } catch (e: CancellationException) {
+                    throw e
                 } catch (e: Exception) {
                     logger.error("Error with $url: ${e.message}")
                 }
