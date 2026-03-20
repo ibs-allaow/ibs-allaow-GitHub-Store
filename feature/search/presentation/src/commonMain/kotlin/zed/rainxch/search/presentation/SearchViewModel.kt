@@ -22,6 +22,7 @@ import zed.rainxch.core.domain.model.Platform
 import zed.rainxch.core.domain.model.RateLimitException
 import zed.rainxch.core.domain.repository.FavouritesRepository
 import zed.rainxch.core.domain.repository.InstalledAppsRepository
+import zed.rainxch.core.domain.repository.SeenReposRepository
 import zed.rainxch.core.domain.repository.StarredRepository
 import zed.rainxch.core.domain.repository.TweaksRepository
 import zed.rainxch.core.domain.use_cases.SyncInstalledAppsUseCase
@@ -51,6 +52,7 @@ class SearchViewModel(
     private val platform: Platform,
     private val clipboardHelper: ClipboardHelper,
     private val tweaksRepository: TweaksRepository,
+    private val seenReposRepository: SeenReposRepository,
 ) : ViewModel() {
     private var hasLoadedInitialData = false
     private var currentSearchJob: Job? = null
@@ -73,6 +75,8 @@ class SearchViewModel(
                     observeFavouriteApps()
                     observeStarredRepos()
                     observeLiquidGlassEnabled()
+                    observeSeenRepos()
+                    observeHideSeenEnabled()
                     observeClipboardSetting()
                     checkClipboardForLinks()
 
@@ -92,6 +96,22 @@ class SearchViewModel(
                         isLiquidGlassEnabled = enabled,
                     )
                 }
+            }
+        }
+    }
+
+    private fun observeSeenRepos() {
+        viewModelScope.launch {
+            seenReposRepository.getAllSeenRepoIds().collect { ids ->
+                _state.update { it.copy(seenRepoIds = ids) }
+            }
+        }
+    }
+
+    private fun observeHideSeenEnabled() {
+        viewModelScope.launch {
+            tweaksRepository.getHideSeenEnabled().collect { enabled ->
+                _state.update { it.copy(isHideSeenEnabled = enabled) }
             }
         }
     }
