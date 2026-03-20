@@ -62,18 +62,18 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import zed.rainxch.core.domain.model.DiscoveryPlatform
 import zed.rainxch.core.presentation.components.GithubStoreButton
 import zed.rainxch.core.presentation.components.RepositoryCard
 import zed.rainxch.core.presentation.locals.LocalBottomNavigationHeight
 import zed.rainxch.core.presentation.locals.LocalBottomNavigationLiquid
 import zed.rainxch.core.presentation.theme.GithubStoreTheme
 import zed.rainxch.core.presentation.utils.ObserveAsEvents
+import zed.rainxch.core.presentation.utils.toIcons
 import zed.rainxch.githubstore.core.presentation.res.*
 import zed.rainxch.home.domain.model.HomeCategory
-import zed.rainxch.home.domain.model.HomePlatform
 import zed.rainxch.home.presentation.components.LiquidGlassCategoryChips
 import zed.rainxch.home.presentation.locals.LocalHomeTopBarLiquid
-import zed.rainxch.home.presentation.utils.toIcons
 
 @Composable
 fun HomeRoot(
@@ -389,8 +389,8 @@ private fun FilterChips(
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun TopAppBar(
-    currentPlatform: HomePlatform,
-    onChangePlatform: (HomePlatform) -> Unit,
+    currentPlatform: DiscoveryPlatform,
+    onChangePlatform: (DiscoveryPlatform) -> Unit,
     isPlatformPopupVisible: Boolean,
     onTogglePlatformPopup: () -> Unit,
 ) {
@@ -460,8 +460,8 @@ private fun TopAppBar(
 @Composable
 private fun PlatformsPopup(
     onTogglePlatformPopup: () -> Unit,
-    onChangePlatform: (HomePlatform) -> Unit,
-    currentPlatform: HomePlatform,
+    onChangePlatform: (DiscoveryPlatform) -> Unit,
+    currentPlatform: DiscoveryPlatform,
 ) {
     Popup(
         onDismissRequest = onTogglePlatformPopup,
@@ -473,7 +473,7 @@ private fun PlatformsPopup(
                     .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                     .padding(6.dp),
         ) {
-            HomePlatform.entries.forEach { platform ->
+            DiscoveryPlatform.entries.forEach { platform ->
                 Box(
                     modifier =
                         Modifier

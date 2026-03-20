@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import zed.rainxch.core.domain.logging.GitHubStoreLogger
+import zed.rainxch.core.domain.model.DiscoveryPlatform
 import zed.rainxch.core.domain.model.Platform
 import zed.rainxch.core.domain.repository.FavouritesRepository
 import zed.rainxch.core.domain.repository.InstalledAppsRepository
@@ -27,7 +28,6 @@ import zed.rainxch.core.presentation.model.DiscoveryRepositoryUi
 import zed.rainxch.core.presentation.utils.toUi
 import zed.rainxch.githubstore.core.presentation.res.*
 import zed.rainxch.home.domain.model.HomeCategory
-import zed.rainxch.home.domain.model.HomePlatform
 import zed.rainxch.home.domain.repository.HomeRepository
 import zed.rainxch.home.presentation.HomeEvent.*
 
@@ -114,7 +114,7 @@ class HomeViewModel(
     private fun loadRepos(
         isInitial: Boolean = false,
         category: HomeCategory? = null,
-        platform: HomePlatform? = null,
+        platform: DiscoveryPlatform? = null,
     ): Job? {
         currentJob?.cancel()
 

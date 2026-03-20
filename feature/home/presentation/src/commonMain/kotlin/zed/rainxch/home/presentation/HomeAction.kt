@@ -1,8 +1,8 @@
 package zed.rainxch.home.presentation
 
+import zed.rainxch.core.domain.model.DiscoveryPlatform
 import zed.rainxch.core.presentation.model.GithubRepoSummaryUi
 import zed.rainxch.home.domain.model.HomeCategory
-import zed.rainxch.home.domain.model.HomePlatform
 
 sealed interface HomeAction {
     data object Refresh : HomeAction
@@ -28,7 +28,7 @@ sealed interface HomeAction {
     ) : HomeAction
 
     data class SwitchFilterPlatform(
-        val platform: HomePlatform,
+        val platform: DiscoveryPlatform,
     ) : HomeAction
 
     data class OnRepositoryClick(

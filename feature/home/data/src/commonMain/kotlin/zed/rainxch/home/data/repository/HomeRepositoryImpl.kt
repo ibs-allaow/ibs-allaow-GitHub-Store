@@ -30,13 +30,13 @@ import zed.rainxch.core.data.dto.GithubRepoSearchResponse
 import zed.rainxch.core.data.mappers.toSummary
 import zed.rainxch.core.data.network.executeRequest
 import zed.rainxch.core.domain.logging.GitHubStoreLogger
+import zed.rainxch.core.domain.model.DiscoveryPlatform
 import zed.rainxch.core.domain.model.GithubRepoSummary
 import zed.rainxch.core.domain.model.PaginatedDiscoveryRepositories
 import zed.rainxch.core.domain.model.Platform
 import zed.rainxch.core.domain.model.RateLimitException
 import zed.rainxch.home.data.data_source.CachedRepositoriesDataSource
 import zed.rainxch.home.data.mappers.toGithubRepoSummary
-import zed.rainxch.home.domain.model.HomePlatform
 import zed.rainxch.home.domain.repository.HomeRepository
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
@@ -51,13 +51,13 @@ class HomeRepositoryImpl(
 ) : HomeRepository {
     private fun cacheKey(
         category: String,
-        requestedPlatform: HomePlatform,
+        requestedPlatform: DiscoveryPlatform,
         page: Int,
     ): String = "home:$category:${requestedPlatform.name}:page$page"
 
     @OptIn(ExperimentalTime::class)
     override fun getTrendingRepositories(
-        platform: HomePlatform,
+        platform: DiscoveryPlatform,
         page: Int,
     ): Flow<PaginatedDiscoveryRepositories> =
         flow {
@@ -129,7 +129,7 @@ class HomeRepositoryImpl(
 
     @OptIn(ExperimentalTime::class)
     override fun getHotReleaseRepositories(
-        platform: HomePlatform,
+        platform: DiscoveryPlatform,
         page: Int,
     ): Flow<PaginatedDiscoveryRepositories> =
         flow {
@@ -201,7 +201,7 @@ class HomeRepositoryImpl(
 
     @OptIn(ExperimentalTime::class)
     override fun getMostPopular(
-        platform: HomePlatform,
+        platform: DiscoveryPlatform,
         page: Int,
     ): Flow<PaginatedDiscoveryRepositories> =
         flow {
@@ -270,7 +270,7 @@ class HomeRepositoryImpl(
         }.flowOn(Dispatchers.IO)
 
     private fun searchReposWithInstallersFlow(
-        platform: HomePlatform,
+        platform: DiscoveryPlatform,
         baseQuery: String,
         sort: String,
         order: String,
@@ -434,15 +434,15 @@ class HomeRepositoryImpl(
 
     private fun buildSimplifiedQuery(
         baseQuery: String,
-        requestedPlatform: HomePlatform,
+        requestedPlatform: DiscoveryPlatform,
     ): String {
         val topic =
             when (requestedPlatform) {
-                HomePlatform.All -> null
-                HomePlatform.Android -> "android"
-                HomePlatform.Windows -> "desktop"
-                HomePlatform.Macos -> "macos"
-                HomePlatform.Linux -> "linux"
+                DiscoveryPlatform.All -> null
+                DiscoveryPlatform.Android -> "android"
+                DiscoveryPlatform.Windows -> "desktop"
+                DiscoveryPlatform.Macos -> "macos"
+                DiscoveryPlatform.Linux -> "linux"
             }
 
         return if (topic == null) baseQuery else "$baseQuery topic:$topic"

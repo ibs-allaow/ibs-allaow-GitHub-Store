@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
+import zed.rainxch.core.domain.model.DiscoveryPlatform
 import zed.rainxch.core.presentation.model.DiscoveryRepositoryUi
 import zed.rainxch.core.presentation.model.GithubRepoSummaryUi
 import zed.rainxch.core.presentation.model.GithubUserUi
@@ -303,7 +304,7 @@ fun RepositoryCard(
 
 @Composable
 fun PlatformChip(
-    platform: String,
+    platform: DiscoveryPlatform,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -312,7 +313,7 @@ fun PlatformChip(
         color = MaterialTheme.colorScheme.surfaceContainerHighest,
     ) {
         Text(
-            text = platform,
+            text = platform.name,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontWeight = FontWeight.Medium,

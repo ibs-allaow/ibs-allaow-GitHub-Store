@@ -1,15 +1,15 @@
-package zed.rainxch.home.presentation.utils
+package zed.rainxch.core.presentation.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.jetbrains.compose.resources.vectorResource
+import zed.rainxch.core.domain.model.DiscoveryPlatform
 import zed.rainxch.githubstore.core.presentation.res.*
-import zed.rainxch.home.domain.model.HomePlatform
 
 @Composable
-fun HomePlatform.toIcons(): List<ImageVector> =
+fun DiscoveryPlatform.toIcons(): List<ImageVector> =
     when (this) {
-        HomePlatform.All -> {
+        DiscoveryPlatform.All -> {
             listOf(
                 vectorResource(Res.drawable.ic_platform_android),
                 vectorResource(Res.drawable.ic_platform_linux),
@@ -18,19 +18,19 @@ fun HomePlatform.toIcons(): List<ImageVector> =
             )
         }
 
-        HomePlatform.Android -> {
+        DiscoveryPlatform.Android -> {
             listOf(vectorResource(Res.drawable.ic_platform_android))
         }
 
-        HomePlatform.Macos -> {
+        DiscoveryPlatform.Macos -> {
             listOf(vectorResource(Res.drawable.ic_platform_macos))
         }
 
-        HomePlatform.Windows -> {
+        DiscoveryPlatform.Windows -> {
             listOf(vectorResource(Res.drawable.ic_platform_windows))
         }
 
-        HomePlatform.Linux -> {
+        DiscoveryPlatform.Linux -> {
             listOf(vectorResource(Res.drawable.ic_platform_linux))
         }
     }

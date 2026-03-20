@@ -16,11 +16,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import zed.rainxch.core.domain.logging.GitHubStoreLogger
+import zed.rainxch.core.domain.model.DiscoveryPlatform
 import zed.rainxch.home.data.data_source.CachedRepositoriesDataSource
 import zed.rainxch.home.data.dto.CachedGithubRepoSummary
 import zed.rainxch.home.data.dto.CachedRepoResponse
 import zed.rainxch.home.domain.model.HomeCategory
-import zed.rainxch.home.domain.model.HomePlatform
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
@@ -55,17 +55,17 @@ class CachedRepositoriesDataSourceImpl(
         val fetchedAt: Instant,
     )
 
-    override suspend fun getCachedTrendingRepos(platform: HomePlatform): CachedRepoResponse? =
+    override suspend fun getCachedTrendingRepos(platform: DiscoveryPlatform): CachedRepoResponse? =
         fetchCachedReposForCategory(platform, HomeCategory.TRENDING)
 
-    override suspend fun getCachedHotReleaseRepos(platform: HomePlatform): CachedRepoResponse? =
+    override suspend fun getCachedHotReleaseRepos(platform: DiscoveryPlatform): CachedRepoResponse? =
         fetchCachedReposForCategory(platform, HomeCategory.HOT_RELEASE)
 
-    override suspend fun getCachedMostPopularRepos(platform: HomePlatform): CachedRepoResponse? =
+    override suspend fun getCachedMostPopularRepos(platform: DiscoveryPlatform): CachedRepoResponse? =
         fetchCachedReposForCategory(platform, HomeCategory.MOST_POPULAR)
 
     private suspend fun fetchCachedReposForCategory(
-        platform: HomePlatform,
+        platform: DiscoveryPlatform,
         category: HomeCategory,
     ): CachedRepoResponse? {
         val cacheKey = CacheKey(platform, category)
@@ -82,7 +82,7 @@ class CachedRepositoriesDataSourceImpl(
         }
 
         return withContext(Dispatchers.IO) {
-            if (platform == HomePlatform.All) {
+            if (platform == DiscoveryPlatform.All) {
                 val paths =
                     when (category) {
                         HomeCategory.TRENDING -> {
@@ -200,11 +200,11 @@ class CachedRepositoriesDataSourceImpl(
             } else {
                 val platformName =
                     when (platform) {
-                        HomePlatform.Android -> "android"
-                        HomePlatform.Windows -> "windows"
-                        HomePlatform.Macos -> "macos"
-                        HomePlatform.Linux -> "linux"
-                        HomePlatform.All -> error("Unreachable: All is handled above")
+                        DiscoveryPlatform.Android -> "android"
+                        DiscoveryPlatform.Windows -> "windows"
+                        DiscoveryPlatform.Macos -> "macos"
+                        DiscoveryPlatform.Linux -> "linux"
+                        DiscoveryPlatform.All -> error("Unreachable: All is handled above")
                     }
 
                 val path =
@@ -252,7 +252,7 @@ class CachedRepositoriesDataSourceImpl(
     }
 
     private data class CacheKey(
-        val platform: HomePlatform,
+        val platform: DiscoveryPlatform,
         val category: HomeCategory,
     )
 }
