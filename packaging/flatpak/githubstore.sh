@@ -8,6 +8,10 @@ export JAVA_HOME=/app/jre
 mkdir -p "${XDG_CONFIG_HOME:-$HOME/.config}/githubstore"
 mkdir -p "${XDG_DATA_HOME:-$HOME/.local/share}/githubstore"
 
+# Force X11 (via XWayland on Wayland) — Skiko/Compose doesn't yet
+# reliably support native Wayland drawing surfaces with JBR.
+export GDK_BACKEND=x11
+
 exec /app/jre/bin/java \
     -Djava.awt.headless=false \
     -Dawt.useSystemAAFontSettings=on \
