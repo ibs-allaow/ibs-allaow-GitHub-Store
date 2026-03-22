@@ -499,24 +499,24 @@ class DesktopInstaller(
                         Logger.w { "xdg-open exited with code $exitCode" }
                         showFlatpakNotification(
                             title = "Installation",
-                            message = "Downloaded to: ${file.absolutePath}\n" +
-                                "Please open this file with your software center to install.",
+                            message = "Please open this file with your software center to install.",
                         )
+                        openInFileManager(file)
                     }
                 } catch (e: Exception) {
                     Logger.w { "Failed to open file via xdg-open: ${e.message}" }
                     showFlatpakNotification(
                         title = "Download Complete",
-                        message = "Downloaded to: ${file.absolutePath}\n" +
-                            "Please install manually from your file manager.",
+                        message = "Please install manually from your file manager.",
                     )
+                    openInFileManager(file)
                 }
             }
 
             "appimage" -> {
                 // AppImages can't run inside Flatpak (no FUSE), and there's no point
                 // moving them to ~/Applications from within the sandbox.
-                // Instead, set executable and tell the user where to find it.
+                // Instead, set executable and open the file manager so the user can find it.
                 Logger.d { "AppImage downloaded in Flatpak — preparing for host launch" }
 
                 // Try to make it executable (may work if it's on a filesystem we can chmod)
@@ -529,23 +529,19 @@ class DesktopInstaller(
 
                 showFlatpakNotification(
                     title = "AppImage Downloaded",
-                    message = "Downloaded to: ${file.absolutePath}\n" +
-                        "Right-click → Properties → mark as executable, then double-click to run.\n" +
-                        "Or run from terminal: chmod +x '${file.name}' && ./'${file.name}'",
+                    message = "Right-click → Properties → mark as executable, then double-click to run.",
                 )
+
+                // Open the file manager highlighting the downloaded file
+                openInFileManager(file)
             }
 
             else -> {
-                // Fallback: try xdg-open for any other type
-                try {
-                    ProcessBuilder("xdg-open", file.absolutePath).start()
-                } catch (e: Exception) {
-                    Logger.w { "Could not open file: ${e.message}" }
-                }
                 showFlatpakNotification(
                     title = "Download Complete",
-                    message = "Downloaded to: ${file.absolutePath}",
+                    message = "File saved to your Downloads folder.",
                 )
+                openInFileManager(file)
             }
         }
     }
@@ -573,6 +569,47 @@ class DesktopInstaller(
         } catch (e: Exception) {
             Logger.w { "Could not show Flatpak notification: ${e.message}" }
             Logger.i { "[$title] $message" }
+        }
+    }
+
+    /**
+     * Opens the system file manager with the given file highlighted/selected.
+     *
+     * Tries D-Bus FileManager1.ShowItems first (works on GNOME, KDE, etc. and
+     * goes through the Flatpak portal), then falls back to xdg-open on the
+     * parent directory.
+     */
+    private fun openInFileManager(file: File) {
+        try {
+            // D-Bus call to org.freedesktop.FileManager1.ShowItems — this highlights
+            // the specific file in the file manager. Works via Flatpak portal.
+            val fileUri = "file://${file.absolutePath}"
+            val process = ProcessBuilder(
+                "gdbus", "call",
+                "--session",
+                "--dest", "org.freedesktop.FileManager1",
+                "--object-path", "/org/freedesktop/FileManager1",
+                "--method", "org.freedesktop.FileManager1.ShowItems",
+                "['$fileUri']", "",
+            ).start()
+            val exitCode = process.waitFor()
+
+            if (exitCode == 0) {
+                Logger.d { "Opened file manager via D-Bus ShowItems: ${file.absolutePath}" }
+                return
+            }
+            Logger.w { "D-Bus ShowItems failed with exit code $exitCode" }
+        } catch (e: Exception) {
+            Logger.w { "D-Bus ShowItems not available: ${e.message}" }
+        }
+
+        // Fallback: open the parent directory
+        try {
+            val parentDir = file.parentFile ?: return
+            ProcessBuilder("xdg-open", parentDir.absolutePath).start()
+            Logger.d { "Opened parent directory: ${parentDir.absolutePath}" }
+        } catch (e: Exception) {
+            Logger.w { "Could not open file manager: ${e.message}" }
         }
     }
 
