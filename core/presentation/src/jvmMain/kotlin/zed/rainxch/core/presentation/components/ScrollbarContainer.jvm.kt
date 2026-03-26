@@ -25,7 +25,9 @@ actual fun ScrollbarContainer(
     content: @Composable () -> Unit,
 ) {
     if (!enabled) {
-        content()
+        Box(modifier = modifier) {
+            content()
+        }
         return
     }
     Box(modifier = modifier.padding(start = 8.dp)) {
@@ -55,7 +57,10 @@ actual fun ScrollbarContainer(
     content: @Composable () -> Unit,
 ) {
     if (!enabled) {
-        content()
+        Box(modifier = modifier) {
+            content()
+        }
+
         return
     }
     Box(modifier = modifier.padding(start = 8.dp)) {
@@ -102,10 +107,12 @@ private class StaggeredGridScrollbarAdapter(
     ) {
         val totalContent = estimatedContentSize()
         val layoutInfo = gridState.layoutInfo
-        if (layoutInfo.totalItemsCount == 0 || totalContent <= 0f) return
-        val fraction = scrollOffset / totalContent
+        val maxOffset = maxScrollOffset(containerSize)
+        if (layoutInfo.totalItemsCount == 0 || totalContent <= 0f || maxOffset <= 0f) return
+        val fraction = (scrollOffset / maxOffset).coerceIn(0f, 1f)
+
         val targetIndex =
-            (fraction * layoutInfo.totalItemsCount)
+            (fraction * (layoutInfo.totalItemsCount - 1))
                 .toInt()
                 .coerceIn(0, maxOf(layoutInfo.totalItemsCount - 1, 0))
         gridState.scrollToItem(targetIndex)
