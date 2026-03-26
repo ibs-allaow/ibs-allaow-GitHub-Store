@@ -64,6 +64,8 @@ kotlin {
             implementation(projects.feature.starred.data)
             implementation(projects.feature.starred.presentation)
 
+            implementation(projects.feature.recentlyViewed.presentation)
+
             implementation(libs.jetbrains.compose.navigation)
             implementation(libs.bundles.koin.common)
             implementation(libs.liquid)

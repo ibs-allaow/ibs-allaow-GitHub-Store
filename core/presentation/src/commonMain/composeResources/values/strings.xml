@@ -311,6 +311,8 @@
     <string name="add_to_favourites">Add to favourites</string>
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="favourites">Favourites</string>
+    <string name="recently_viewed">Recently Viewed</string>
+    <string name="profile_recently_viewed_description">Repositories you have visited</string>
 
     <string name="added_just_now">added just now</string>
     <string name="added_hours_ago">added %1$d hour(s) ago</string>

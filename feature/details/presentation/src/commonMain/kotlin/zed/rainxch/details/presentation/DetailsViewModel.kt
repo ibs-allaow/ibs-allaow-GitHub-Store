@@ -1390,7 +1390,7 @@ class DetailsViewModel(
                     } else {
                         detailsRepository.getRepositoryById(repositoryId)
                     }
-                launch { seenReposRepository.markAsSeen(repo.id) }
+                launch { seenReposRepository.markAsSeen(repo) }
 
                 val isFavoriteDeferred =
                     async {

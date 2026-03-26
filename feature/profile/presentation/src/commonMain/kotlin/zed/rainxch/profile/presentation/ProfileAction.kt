@@ -106,6 +106,8 @@ sealed interface ProfileAction {
 
     data object OnClearSeenRepos : ProfileAction
 
+    data object OnRecentlyViewedClick : ProfileAction
+
     data object OnSponsorClick : ProfileAction
 
     data class OnScrollbarToggled(

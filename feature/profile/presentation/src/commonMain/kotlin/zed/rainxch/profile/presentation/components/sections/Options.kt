@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.VolunteerActivism
 import androidx.compose.material3.Card
@@ -58,6 +59,17 @@ fun LazyListScope.options(
             description = stringResource(Res.string.profile_favourites_description),
             onClick = {
                 onAction(ProfileAction.OnFavouriteReposClick)
+            },
+        )
+
+        Spacer(Modifier.height(4.dp))
+
+        OptionCard(
+            icon = Icons.Default.Schedule,
+            label = stringResource(Res.string.recently_viewed),
+            description = stringResource(Res.string.profile_recently_viewed_description),
+            onClick = {
+                onAction(ProfileAction.OnRecentlyViewedClick)
             },
         )
 

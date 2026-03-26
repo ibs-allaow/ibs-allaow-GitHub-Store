@@ -37,6 +37,7 @@ import zed.rainxch.devprofile.presentation.DeveloperProfileRoot
 import zed.rainxch.favourites.presentation.FavouritesRoot
 import zed.rainxch.home.presentation.HomeRoot
 import zed.rainxch.profile.presentation.ProfileRoot
+import zed.rainxch.recentlyviewed.presentation.RecentlyViewedRoot
 import zed.rainxch.search.presentation.SearchRoot
 import zed.rainxch.starred.presentation.StarredReposRoot
 
@@ -247,11 +248,36 @@ fun AppNavigation(
                         onNavigateToFavouriteRepos = {
                             navController.navigate(GithubStoreGraph.FavouritesScreen)
                         },
+                        onNavigateToRecentlyViewed = {
+                            navController.navigate(GithubStoreGraph.RecentlyViewedScreen)
+                        },
                         onNavigateToDevProfile = { username ->
                             navController.navigate(GithubStoreGraph.DeveloperProfileScreen(username))
                         },
                         onNavigateToSponsor = {
                             navController.navigate(GithubStoreGraph.SponsorScreen)
+                        },
+                    )
+                }
+
+                composable<GithubStoreGraph.RecentlyViewedScreen> {
+                    RecentlyViewedRoot(
+                        onNavigateBack = {
+                            navController.navigateUp()
+                        },
+                        onNavigateToDetails = { repoId ->
+                            navController.navigate(
+                                GithubStoreGraph.DetailsScreen(
+                                    repositoryId = repoId,
+                                ),
+                            )
+                        },
+                        onNavigateToDeveloperProfile = { username ->
+                            navController.navigate(
+                                GithubStoreGraph.DeveloperProfileScreen(
+                                    username = username,
+                                ),
+                            )
                         },
                     )
                 }

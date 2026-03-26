@@ -12,8 +12,14 @@ interface SeenRepoDao {
     @Query("SELECT repoId FROM seen_repos")
     fun getAllSeenRepoIds(): Flow<List<Long>>
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Query("SELECT * FROM seen_repos ORDER BY seenAt DESC")
+    fun getAllSeenRepos(): Flow<List<SeenRepoEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: SeenRepoEntity)
+
+    @Query("DELETE FROM seen_repos WHERE repoId = :repoId")
+    suspend fun deleteById(repoId: Long)
 
     @Query("DELETE FROM seen_repos")
     suspend fun clearAll()

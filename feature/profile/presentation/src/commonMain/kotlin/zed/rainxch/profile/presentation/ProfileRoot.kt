@@ -49,6 +49,7 @@ fun ProfileRoot(
     onNavigateToAuthentication: () -> Unit,
     onNavigateToStarredRepos: () -> Unit,
     onNavigateToFavouriteRepos: () -> Unit,
+    onNavigateToRecentlyViewed: () -> Unit,
     onNavigateToSponsor: () -> Unit,
     viewModel: ProfileViewModel = koinViewModel(),
 ) {
@@ -140,6 +141,10 @@ fun ProfileRoot(
 
                 is ProfileAction.OnRepositoriesClick -> {
                     onNavigateToDevProfile(action.username)
+                }
+
+                ProfileAction.OnRecentlyViewedClick -> {
+                    onNavigateToRecentlyViewed()
                 }
 
                 ProfileAction.OnSponsorClick -> {

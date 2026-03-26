@@ -402,6 +402,10 @@ class ProfileViewModel(
                 // Handed in composable
             }
 
+            ProfileAction.OnRecentlyViewedClick -> {
+                // Handed in composable
+            }
+
             is ProfileAction.OnFontThemeSelected -> {
                 viewModelScope.launch {
                     tweaksRepository.setFontTheme(action.fontTheme)

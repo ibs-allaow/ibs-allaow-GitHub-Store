@@ -1,11 +1,6 @@
-package zed.rainxch.core.data.local.db.entities
+package zed.rainxch.core.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "seen_repos")
-data class SeenRepoEntity(
-    @PrimaryKey
+data class SeenRepo(
     val repoId: Long,
     val repoName: String,
     val repoOwner: String,

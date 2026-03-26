@@ -9,6 +9,7 @@ import zed.rainxch.devprofile.presentation.DeveloperProfileViewModel
 import zed.rainxch.favourites.presentation.FavouritesViewModel
 import zed.rainxch.home.presentation.HomeViewModel
 import zed.rainxch.profile.presentation.ProfileViewModel
+import zed.rainxch.recentlyviewed.presentation.RecentlyViewedViewModel
 import zed.rainxch.search.presentation.SearchViewModel
 import zed.rainxch.starred.presentation.StarredReposViewModel
 
@@ -20,6 +21,7 @@ val viewModelsModule =
         viewModelOf(::DeveloperProfileViewModel)
         viewModelOf(::FavouritesViewModel)
         viewModelOf(::HomeViewModel)
+        viewModelOf(::RecentlyViewedViewModel)
         viewModelOf(::SearchViewModel)
         viewModelOf(::ProfileViewModel)
         viewModelOf(::StarredReposViewModel)

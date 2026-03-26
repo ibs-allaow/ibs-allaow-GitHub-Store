@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "ce64b232de8d6ab9d95e3adabf7c7c43",
+    "identityHash": "3d6c862d777da61753a7876aca56a569",
     "entities": [
       {
         "tableName": "installed_apps",
@@ -497,12 +497,46 @@
       },
       {
         "tableName": "seen_repos",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`repoId` INTEGER NOT NULL, `seenAt` INTEGER NOT NULL, PRIMARY KEY(`repoId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`repoId` INTEGER NOT NULL, `repoName` TEXT NOT NULL, `repoOwner` TEXT NOT NULL, `repoOwnerAvatarUrl` TEXT NOT NULL, `repoDescription` TEXT, `primaryLanguage` TEXT, `repoUrl` TEXT NOT NULL, `seenAt` INTEGER NOT NULL, PRIMARY KEY(`repoId`))",
         "fields": [
           {
             "fieldPath": "repoId",
             "columnName": "repoId",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repoName",
+            "columnName": "repoName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repoOwner",
+            "columnName": "repoOwner",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repoOwnerAvatarUrl",
+            "columnName": "repoOwnerAvatarUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repoDescription",
+            "columnName": "repoDescription",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "primaryLanguage",
+            "columnName": "primaryLanguage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "repoUrl",
+            "columnName": "repoUrl",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -522,7 +556,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ce64b232de8d6ab9d95e3adabf7c7c43')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3d6c862d777da61753a7876aca56a569')"
     ]
   }
 }
