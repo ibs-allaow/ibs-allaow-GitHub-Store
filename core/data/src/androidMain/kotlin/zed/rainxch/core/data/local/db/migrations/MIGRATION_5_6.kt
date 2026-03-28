@@ -10,6 +10,12 @@ val MIGRATION_5_6 =
                 """
                 CREATE TABLE IF NOT EXISTS seen_repos (
                     repoId INTEGER NOT NULL PRIMARY KEY,
+                    repoName TEXT NOT NULL DEFAULT '',
+                    repoOwner TEXT NOT NULL DEFAULT '',
+                    repoOwnerAvatarUrl TEXT NOT NULL DEFAULT '',
+                    repoDescription TEXT,
+                    primaryLanguage TEXT,
+                    repoUrl TEXT NOT NULL DEFAULT '',
                     seenAt INTEGER NOT NULL
                 )
                 """.trimIndent(),
