@@ -8,6 +8,7 @@ import zed.rainxch.core.data.local.db.migrations.MIGRATION_2_3
 import zed.rainxch.core.data.local.db.migrations.MIGRATION_3_4
 import zed.rainxch.core.data.local.db.migrations.MIGRATION_4_5
 import zed.rainxch.core.data.local.db.migrations.MIGRATION_5_6
+import zed.rainxch.core.data.local.db.migrations.MIGRATION_6_7
 import zed.rainxch.core.data.local.db.migrations.MIGRATION_7_8
 
 fun initDatabase(context: Context): AppDatabase {
@@ -24,6 +25,7 @@ fun initDatabase(context: Context): AppDatabase {
             MIGRATION_3_4,
             MIGRATION_4_5,
             MIGRATION_5_6,
+            MIGRATION_6_7,
             MIGRATION_7_8,
         ).build()
 }
