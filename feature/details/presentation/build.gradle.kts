@@ -15,7 +15,7 @@ kotlin {
                 implementation(libs.markdown.renderer)
                 implementation(libs.markdown.renderer.coil3)
 
-                implementation(compose.components.resources)
+                implementation(libs.jetbrains.compose.components.resources)
                 implementation(libs.liquid)
                 implementation(libs.kotlinx.datetime)
 

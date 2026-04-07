@@ -143,8 +143,6 @@ fun AppHeader(
                                     strokeCap = StrokeCap.Round,
                                 )
                             }
-
-                            else -> {}
                         }
                     }
                 }

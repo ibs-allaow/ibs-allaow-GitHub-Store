@@ -94,7 +94,6 @@ fun SmartInstallButton(
 
     val isSameVersionInstalled =
         isInstalled &&
-            installedApp != null &&
             normalizeVersion(installedApp.installedVersion) ==
             normalizeVersion(
                 state.selectedRelease?.tagName ?: "",

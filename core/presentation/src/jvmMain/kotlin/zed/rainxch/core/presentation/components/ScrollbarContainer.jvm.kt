@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package zed.rainxch.core.presentation.components
 
 import androidx.compose.foundation.LocalScrollbarStyle

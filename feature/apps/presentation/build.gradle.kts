@@ -13,7 +13,7 @@ kotlin {
                 implementation(projects.feature.apps.domain)
 
                 implementation(libs.androidx.compose.ui.tooling.preview)
-                implementation(compose.components.resources)
+                implementation(libs.jetbrains.compose.components.resources)
 
                 implementation(libs.bundles.landscapist)
                 implementation(libs.liquid)

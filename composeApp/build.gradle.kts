@@ -75,11 +75,11 @@ kotlin {
             implementation(libs.touchlab.kermit)
             implementation(libs.kotlinx.collections.immutable)
 
-            implementation(compose.runtime)
-            implementation(compose.foundation)
+            implementation(libs.jetbrains.compose.runtime)
+            implementation(libs.jetbrains.compose.foundation)
             implementation(libs.jetbrains.compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
+            implementation(libs.jetbrains.compose.ui)
+            implementation(libs.jetbrains.compose.components.resources)
 
             implementation(libs.androidx.compose.ui.tooling.preview)
             implementation(libs.jetbrains.compose.viewmodel)
@@ -95,13 +95,6 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.koin.compose.viewmodel)
                 implementation(libs.koin.compose.viewmodel)
-
-                implementation(compose.desktop.linux_x64)
-                implementation(compose.desktop.linux_arm64)
-                implementation(compose.desktop.macos_x64)
-                implementation(compose.desktop.macos_arm64)
-                implementation(compose.desktop.windows_x64)
-                implementation(compose.desktop.windows_arm64)
 
                 implementation(libs.slf4j.simple)
             }

@@ -313,7 +313,6 @@ class TweaksViewModel(
                         when (action.type) {
                             ProxyType.NONE -> ProxyConfig.None
                             ProxyType.SYSTEM -> ProxyConfig.System
-                            else -> return
                         }
                     viewModelScope.launch {
                         runCatching {

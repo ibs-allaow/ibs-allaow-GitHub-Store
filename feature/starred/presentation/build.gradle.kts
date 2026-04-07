@@ -17,7 +17,7 @@ kotlin {
                 implementation(libs.kotlinx.collections.immutable)
 
                 implementation(libs.androidx.compose.ui.tooling.preview)
-                implementation(compose.components.resources)
+                implementation(libs.jetbrains.compose.components.resources)
             }
         }
 
