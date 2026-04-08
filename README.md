@@ -85,10 +85,10 @@ Zero Material3. Full ownership. Beautiful by default.
 ### 🎨 Powering the icons
 
 The next GitHub Store will use
-**[RikkaIcons](https://github.com/ArkPackages/RikkaIcons)** — semantic icon tokens for Compose Multiplatform.
+**[RikkaIcons](https://github.com/rainxchzed/RikkaIcons)** — semantic icon tokens for Compose Multiplatform.
 One API, any icon pack. Swap your entire icon set in one line.
 
-**[Browse the library →](https://github.com/ArkPackages/RikkaIcons)**
+**[Browse the library →](https://github.com/rainxchzed/RikkaIcons)**
 
 </div>
 
