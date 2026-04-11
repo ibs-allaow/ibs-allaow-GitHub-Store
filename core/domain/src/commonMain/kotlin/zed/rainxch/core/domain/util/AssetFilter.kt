@@ -44,15 +44,18 @@ class AssetFilter private constructor(
         }
 
         /**
-         * Suggests a sensible filter from a sample asset name. Strips the
-         * version suffix (anything from the first `-<digit>` onward) and
-         * returns the leading prefix as a literal-prefix anchor.
+         * Suggests a sensible filter regex from a sample asset name.
+         * Strips the version suffix (anything from the first `-<digit>`
+         * onward) and returns the leading prefix as a **literal-prefix
+         * regex** — escaped and anchored to the start of the filename so
+         * metacharacters in the prefix don't get interpreted as regex
+         * operators.
          *
          * Examples:
-         *   ente-auth-3.2.5-arm64-v8a.apk  →  ente-auth-
-         *   Photos-1.7.0-universal.apk     →  Photos-
-         *   app_2024-01-15.apk             →  app_
-         *   no-version.apk                 →  null   (cannot derive a useful prefix)
+         *   ente-auth-3.2.5-arm64-v8a.apk  →  ^\Qente-auth-\E
+         *   Photos-1.7.0-universal.apk     →  ^\QPhotos-\E
+         *   app+1.2.3.apk                  →  ^\Qapp+\E       (the `+` is escaped)
+         *   no-version.apk                 →  null            (no clear version anchor)
          *
          * Returns `null` when the asset name has no clear version anchor —
          * blindly returning the full filename would create a filter that
@@ -64,7 +67,8 @@ class AssetFilter private constructor(
             val match = versionAnchor.find(assetName) ?: return null
             val prefix = assetName.substring(0, match.range.first + 1)
             // Need at least 2 meaningful chars; otherwise the suggestion is noise.
-            return prefix.takeIf { it.length >= 2 }
+            if (prefix.length < 2) return null
+            return "^" + Regex.escape(prefix)
         }
     }
 }

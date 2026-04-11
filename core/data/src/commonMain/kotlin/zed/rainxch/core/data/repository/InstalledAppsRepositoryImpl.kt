@@ -8,6 +8,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpHeaders
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -117,6 +118,10 @@ class InstalledAppsRepositoryImpl(
                 .sortedByDescending { it.publishedAt ?: it.createdAt ?: "" }
                 .map { it.toDomain() }
                 .toList()
+        } catch (e: CancellationException) {
+            // Structured concurrency: cancellation must propagate. Never
+            // silently convert a cancelled fetch into an empty result.
+            throw e
         } catch (e: Exception) {
             Logger.e { "Failed to fetch releases for $owner/$repo: ${e.message}" }
             emptyList()
@@ -187,7 +192,10 @@ class InstalledAppsRepositoryImpl(
                 )
 
             if (releases.isEmpty()) {
-                installedAppsDao.updateLastChecked(packageName, System.currentTimeMillis())
+                // The repo has no visible releases (or the fetch failed
+                // softly). Drop any stale update metadata so the badge
+                // doesn't outlive the release that set it.
+                installedAppsDao.clearUpdateMetadata(packageName, System.currentTimeMillis())
                 return false
             }
 
@@ -215,7 +223,10 @@ class InstalledAppsRepositoryImpl(
                     "No matching release found for ${app.appName} in window of ${releases.size}; " +
                         "filter=${app.assetFilterRegex}, fallback=${app.fallbackToOlderReleases}"
                 }
-                installedAppsDao.updateLastChecked(packageName, System.currentTimeMillis())
+                // Filter matches nothing in the fetched window — clear
+                // any cached latest-release metadata so the UI doesn't
+                // keep pointing at an asset that no longer matches.
+                installedAppsDao.clearUpdateMetadata(packageName, System.currentTimeMillis())
                 return false
             }
 
@@ -355,6 +366,20 @@ class InstalledAppsRepositoryImpl(
             regex = normalized,
             fallback = fallbackToOlderReleases,
         )
+
+        // Persisting is the authoritative operation — if the follow-up
+        // re-check fails (network down, rate limited, cancelled) we still
+        // keep the new filter. The next periodic worker run will catch up.
+        try {
+            checkForUpdates(packageName)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Logger.w {
+                "Saved new asset filter for $packageName but immediate " +
+                    "re-check failed: ${e.message}"
+            }
+        }
     }
 
     override suspend fun previewMatchingAssets(

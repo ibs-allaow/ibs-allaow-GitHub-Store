@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import zed.rainxch.apps.presentation.AppsAction
 import zed.rainxch.apps.presentation.AppsState
@@ -307,8 +308,9 @@ private fun PreviewSection(
             if (matchedTag != null) {
                 Text(
                     text =
-                        stringResource(
-                            Res.string.advanced_preview_release,
+                        pluralStringResource(
+                            Res.plurals.advanced_preview_release,
+                            matchedAssets.size,
                             matchedTag,
                             matchedAssets.size,
                         ),

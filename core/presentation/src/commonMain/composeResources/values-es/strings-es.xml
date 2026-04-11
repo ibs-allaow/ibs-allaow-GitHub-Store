@@ -598,7 +598,11 @@
     <string name="asset_filter_help">Solo se instalarán los assets que coincidan con este patrón (regex). Útil para monorepos con varias apps.</string>
     <string name="asset_filter_invalid">Regex no válido</string>
     <string name="asset_filter_no_match">Ningún asset coincide con este filtro</string>
-    <string name="asset_filter_visible_count">Mostrando %1$d de %2$d assets</string>
+    <string name="asset_none_available">No hay assets instalables en esta versión</string>
+    <plurals name="asset_filter_visible_count">
+        <item quantity="one">Mostrando %1$d de %2$d asset</item>
+        <item quantity="other">Mostrando %1$d de %2$d assets</item>
+    </plurals>
     <string name="fallback_older_releases_title">Recurrir a versiones antiguas</string>
     <string name="fallback_older_releases_description">Recorre versiones anteriores hasta encontrar una que coincida con el filtro. Necesario en monorepos donde la última versión pertenece a otra app.</string>
     <string name="advanced_settings_title">Filtro avanzado</string>
@@ -610,5 +614,8 @@
     <string name="advanced_preview_pending">Escribe un filtro para previsualizar los assets coincidentes.</string>
     <string name="advanced_preview_no_match">Ninguna versión reciente contiene assets que coincidan. Activa el modo "versiones antiguas" o ajusta el regex.</string>
     <string name="advanced_preview_failed">No se pudo cargar la vista previa. Comprueba tu conexión e inténtalo de nuevo.</string>
-    <string name="advanced_preview_release">Coincidencia en %1$s · %2$d asset(s)</string>
+    <plurals name="advanced_preview_release">
+        <item quantity="one">Coincidencia en %1$s · %2$d asset</item>
+        <item quantity="other">Coincidencia en %1$s · %2$d assets</item>
+    </plurals>
 </resources>

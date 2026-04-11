@@ -47,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import zed.rainxch.apps.presentation.AppsAction
 import zed.rainxch.apps.presentation.AppsState
@@ -450,8 +451,13 @@ private fun PickAssetStep(
                             visibleAssets.isEmpty() && filterValue.isNotBlank() ->
                                 stringResource(Res.string.asset_filter_no_match)
                             filterValue.isNotBlank() ->
-                                stringResource(
-                                    Res.string.asset_filter_visible_count,
+                                // Pass the total asset count as the plural
+                                // quantity so Polish/Russian inflection picks
+                                // the right form based on the *collection*
+                                // size, and supply both counts as format args.
+                                pluralStringResource(
+                                    Res.plurals.asset_filter_visible_count,
+                                    allAssets.size,
                                     visibleAssets.size,
                                     allAssets.size,
                                 )
@@ -568,6 +574,20 @@ private fun PickAssetStep(
 
             if (visibleAssets.isEmpty()) {
                 item {
+                    // Three distinct empty states:
+                    //  - No installable assets at all in the repo release
+                    //    (defensive: validateAndLinkRepo short-circuits
+                    //    this today, but guard in case flows change)
+                    //  - Filter regex is invalid (shown in error color)
+                    //  - Filter is valid but matched nothing
+                    val (message, isError) = when {
+                        allAssets.isEmpty() ->
+                            stringResource(Res.string.asset_none_available) to false
+                        filterError != null ->
+                            stringResource(Res.string.asset_filter_invalid) to true
+                        else ->
+                            stringResource(Res.string.asset_filter_no_match) to false
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -575,9 +595,14 @@ private fun PickAssetStep(
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
-                            text = stringResource(Res.string.asset_filter_no_match),
+                            text = message,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            color =
+                                if (isError) {
+                                    MaterialTheme.colorScheme.error
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
                         )
                     }
                 }

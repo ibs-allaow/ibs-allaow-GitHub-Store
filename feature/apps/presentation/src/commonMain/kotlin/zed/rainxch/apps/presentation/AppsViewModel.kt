@@ -580,14 +580,13 @@ class AppsViewModel(
         viewModelScope.launch {
             _state.update { it.copy(advancedSavingFilter = true) }
             try {
+                // `setAssetFilter` persists and then re-checks internally,
+                // so the UI badge is refreshed without a second round-trip.
                 installedAppsRepository.setAssetFilter(
                     packageName = app.packageName,
                     regex = draftFilter.takeIf { it.isNotEmpty() },
                     fallbackToOlderReleases = draftFallback,
                 )
-                // Re-run the update check immediately so the UI badge updates
-                // without waiting for the next periodic worker run.
-                installedAppsRepository.checkForUpdates(app.packageName)
                 _state.update {
                     it.copy(
                         advancedSettingsApp = null,
@@ -1097,6 +1096,11 @@ class AppsViewModel(
      *      `Ente Auth` → `auth`)
      *   3. [AssetFilter.suggestFromAssetName] on the first asset
      *
+     * Every candidate is routed through [Regex.escape] before validation
+     * so metacharacters in package names or display words (think
+     * `My App (Beta)` → `(beta)`) are treated literally and never break
+     * regex compilation.
+     *
      * Returns the first non-blank candidate that actually matches at least
      * one of the available assets — otherwise null, which leaves the field
      * empty so we don't pre-fill something useless.
@@ -1109,29 +1113,29 @@ class AppsViewModel(
         val state = _state.value
         val assets = state.linkInstallableAssets
 
-        fun candidateMatches(candidate: String): Boolean {
+        fun tryCandidate(rawToken: String): String? {
+            if (rawToken.length < 3) return null
+            val escaped = Regex.escape(rawToken)
             val regex =
-                runCatching { Regex(candidate, RegexOption.IGNORE_CASE) }.getOrNull()
-                    ?: return false
-            return assets.any { regex.containsMatchIn(it.name) }
+                runCatching { Regex(escaped, RegexOption.IGNORE_CASE) }.getOrNull()
+                    ?: return null
+            return if (assets.any { regex.containsMatchIn(it.name) }) escaped else null
         }
 
         // 1. Last package segment (commonly the most distinctive token).
         val packageTail = packageName.substringAfterLast('.').lowercase()
-        if (packageTail.length >= 3 && candidateMatches(packageTail)) {
-            return packageTail
-        }
+        tryCandidate(packageTail)?.let { return it }
 
         // 2. Significant words from the display name.
         deviceAppName
             .split(' ', '-', '_')
             .map { it.lowercase().trim() }
-            .filter { it.length >= 3 }
             .forEach { token ->
-                if (candidateMatches(token)) return token
+                tryCandidate(token)?.let { return it }
             }
 
-        // 3. Heuristic on the first asset name.
+        // 3. Heuristic on the first asset name (already escaped + anchored
+        //    by AssetFilter.suggestFromAssetName).
         return firstAssetName?.let { AssetFilter.suggestFromAssetName(it) }
     }
 

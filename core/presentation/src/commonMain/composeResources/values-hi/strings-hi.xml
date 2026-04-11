@@ -636,7 +636,11 @@
     <string name="asset_filter_help">केवल इस पैटर्न (regex) से मेल खाने वाले एसेट इंस्टॉल किए जाएंगे। मोनोरिपो के लिए उपयोगी।</string>
     <string name="asset_filter_invalid">अमान्य regex</string>
     <string name="asset_filter_no_match">कोई भी एसेट इस फ़िल्टर से मेल नहीं खाता</string>
-    <string name="asset_filter_visible_count">%2$d में से %1$d एसेट दिखाए जा रहे हैं</string>
+    <string name="asset_none_available">इस रिलीज़ में कोई इंस्टॉल करने योग्य एसेट नहीं है</string>
+    <plurals name="asset_filter_visible_count">
+        <item quantity="one">%2$d में से %1$d एसेट दिखाया जा रहा है</item>
+        <item quantity="other">%2$d में से %1$d एसेट दिखाए जा रहे हैं</item>
+    </plurals>
     <string name="fallback_older_releases_title">पुराने रिलीज़ पर वापस जाएँ</string>
     <string name="fallback_older_releases_description">फ़िल्टर से मेल खाने वाला कोई न मिलने तक पिछले रिलीज़ खंगालें। मोनोरिपो के लिए आवश्यक जहाँ नवीनतम रिलीज़ किसी अन्य ऐप का है।</string>
     <string name="advanced_settings_title">उन्नत फ़िल्टर</string>
@@ -648,5 +652,8 @@
     <string name="advanced_preview_pending">मेल खाने वाले एसेट देखने के लिए फ़िल्टर टाइप करें।</string>
     <string name="advanced_preview_no_match">हाल के रिलीज़ में कोई मेल खाने वाला एसेट नहीं मिला। पुराने रिलीज़ पर फ़ॉलबैक चालू करें या regex समायोजित करें।</string>
     <string name="advanced_preview_failed">पूर्वावलोकन लोड नहीं हो सका। अपना कनेक्शन जाँचें और पुनः प्रयास करें।</string>
-    <string name="advanced_preview_release">%1$s में मिला · %2$d एसेट</string>
+    <plurals name="advanced_preview_release">
+        <item quantity="one">%1$s में मिला · %2$d एसेट</item>
+        <item quantity="other">%1$s में मिला · %2$d एसेट</item>
+    </plurals>
 </resources>

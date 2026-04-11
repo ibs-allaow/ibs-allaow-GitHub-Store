@@ -201,7 +201,7 @@ class AppsRepositoryImpl(
         val apps = appsRepository.getAllInstalledApps().first()
         val exported =
             ExportedAppList(
-                version = 1,
+                version = 2,
                 exportedAt = Clock.System.now().toEpochMilliseconds(),
                 apps =
                     apps.map { app ->
@@ -210,6 +210,8 @@ class AppsRepositoryImpl(
                             repoOwner = app.repoOwner,
                             repoName = app.repoName,
                             repoUrl = app.repoUrl,
+                            assetFilterRegex = app.assetFilterRegex,
+                            fallbackToOlderReleases = app.fallbackToOlderReleases,
                         )
                     },
             )
@@ -254,7 +256,12 @@ class AppsRepositoryImpl(
                         signingFingerprint = systemInfo?.signingFingerprint,
                     )
 
-                linkAppToRepo(deviceApp, repoInfo)
+                linkAppToRepo(
+                    deviceApp = deviceApp,
+                    repoInfo = repoInfo,
+                    assetFilterRegex = exportedApp.assetFilterRegex,
+                    fallbackToOlderReleases = exportedApp.fallbackToOlderReleases,
+                )
                 imported++
             } catch (e: Exception) {
                 logger.error("Failed to import ${exportedApp.repoOwner}/${exportedApp.repoName}: ${e.message}")

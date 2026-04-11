@@ -93,4 +93,33 @@ interface InstalledAppDao {
         packageName: String,
         timestamp: Long,
     )
+
+    /**
+     * Atomically clears the "update available" badge and any cached
+     * latest-release metadata for [packageName], while bumping
+     * `lastCheckedAt`. Used by `checkForUpdates` whenever the current
+     * filter / release window yields no match: without this, a user who
+     * tightens their asset filter would keep the stale badge and the
+     * download button would point at an asset that no longer matches.
+     */
+    @Query(
+        """
+        UPDATE installed_apps
+           SET isUpdateAvailable = 0,
+               latestVersion = NULL,
+               latestAssetName = NULL,
+               latestAssetUrl = NULL,
+               latestAssetSize = NULL,
+               latestVersionName = NULL,
+               latestVersionCode = NULL,
+               latestReleasePublishedAt = NULL,
+               releaseNotes = NULL,
+               lastCheckedAt = :timestamp
+         WHERE packageName = :packageName
+        """,
+    )
+    suspend fun clearUpdateMetadata(
+        packageName: String,
+        timestamp: Long,
+    )
 }
